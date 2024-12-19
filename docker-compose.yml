@@ -2,24 +2,24 @@ services:
   ashtachamma:
     image: ashtachamma
     build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - 8000:8000
+      context: ./backend
+      dockerfile: Dockerfile
     command:
       [
         "uvicorn",
-        "app.main:app",
+        "main:app",
         "--host",
         "0.0.0.0",
         "--port",
         "8000",
         "--reload",
+        "--proxy-headers",
+        "--forwarded-allow-ips='*'",
       ]
     develop:
       watch:
-        - path: ./app
+        - path: ./backend
           action: sync
-          target: /app/app
+          target: /app
         - path: ./requirements.txt
           action: rebuild
