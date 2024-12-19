@@ -23,3 +23,12 @@ services:
           target: /app
         - path: ./requirements.txt
           action: rebuild
+    environment:
+      - BROADCAST_URL=redis://queue:6379
+      - BROADCAST_CHANNEL=ashtachamma
+    depends_on:
+      - queue
+
+  queue:
+    image: redis
+    restart: always
