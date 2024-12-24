@@ -11,8 +11,22 @@ services:
           target: /etc/nginx/nginx.conf
           action: sync+restart
 
+  frontend:
+    image: ashtachamma_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - path: ./frontend
+          action: sync
+          target: /app
+        - path: ./frontend/package.json
+          action: rebuild
+    command: ["pnpm", "run", "dev"]
+
   backend:
-    image: ashtachamma
+    image: ashtachamma_backend
     build:
       context: ./backend
       dockerfile: Dockerfile
