@@ -10,9 +10,17 @@ services:
         - path: ./storage/nginx/nginx.conf
           target: /etc/nginx/nginx.conf
           action: sync+restart
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ashtachamma.rule=Host(`dev.anusec.com`)
+    networks:
+      - frontend
+      - ashtachamma
 
   frontend:
     image: ashtachamma_frontend
+    networks:
+      - ashtachamma
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -27,9 +35,12 @@ services:
 
   backend:
     image: ashtachamma_backend
+    networks:
+      - ashtachamma
     build:
       context: ./backend
       dockerfile: Dockerfile
+
     command:
       [
         "uvicorn",
@@ -58,3 +69,11 @@ services:
   queue:
     image: redis
     restart: always
+    networks:
+      - ashtachamma
+
+networks:
+  frontend:
+    external: true
+  ashtachamma:
+    external: false
